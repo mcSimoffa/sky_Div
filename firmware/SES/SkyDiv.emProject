@@ -51,6 +51,7 @@
           <file file_name="./../Core/Src/main.c" />
           <file file_name="./../Core/Src/stm32f1xx_it.c" />
           <file file_name="./../Core/Src/stm32f1xx_hal_msp.c" />
+          <file file_name="../Core/Src/tv_composite.c" />
         </folder>
       </folder>
     </folder>
