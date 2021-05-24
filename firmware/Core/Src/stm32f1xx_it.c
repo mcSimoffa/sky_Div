@@ -221,7 +221,7 @@ void DMA1_Channel3_IRQHandler(void)
 void TIM2_IRQHandler(void)
 {
   /* USER CODE BEGIN TIM2_IRQn 0 */
-
+  uint16_t cnt2 = __HAL_TIM_GET_COUNTER(&htim2);
   /* USER CODE END TIM2_IRQn 0 */
   HAL_TIM_IRQHandler(&htim2);
   /* USER CODE BEGIN TIM2_IRQn 1 */

@@ -93,7 +93,7 @@ int main(void)
   MX_SPI1_Init();
   MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
-   write_in_buf();
+  write_in_buf();
   tv_syncro_start();
 
   /* USER CODE END 2 */
@@ -163,6 +163,7 @@ void Error_Handler(void)
   __disable_irq();
   while (1)
   {
+    asm("nop");
   }
   /* USER CODE END Error_Handler_Debug */
 }
