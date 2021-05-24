@@ -93,7 +93,7 @@ int main(void)
   MX_SPI1_Init();
   MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
-
+   write_in_buf();
   tv_syncro_start();
 
   /* USER CODE END 2 */

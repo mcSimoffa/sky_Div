@@ -12,14 +12,24 @@ extern SPI_HandleTypeDef hspi1;
 //video-buffer [row][col]
 uint8_t buf[DISPLAY_RESOLUTION_VER/RESOLUTION_DIVIDER][BYTES_IN_ROW];
 
-void new_row()
+void write_in_buf()
+{
+  memset(buf,0,sizeof(buf));
+}
+
+void HAL_TIM_OC_DelayElapsedCallback(TIM_HandleTypeDef *htim)
 {
   static uint16_t n_row = 0;
-  
   if (++n_row >= DISPLAY_RESOLUTION_VER)
-    n_row = 0;
+  n_row = 0;
 
-  uint16_t row_index = n_row/RESOLUTION_DIVIDER;
-  if(HAL_SPI_Transmit_DMA  (&hspi1, (uint8_t*)&buf[row_index][0], BYTES_IN_ROW) != HAL_OK)
+  uint16_t row_index = 0; //n_row/RESOLUTION_DIVIDER;
+  HAL_StatusTypeDef res = HAL_SPI_Transmit_DMA(&hspi1, (uint8_t*)&buf[row_index][0], BYTES_IN_ROW);
+  if(res != HAL_OK)
     Error_Handler();
+}
+
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+  asm("nop");
 }
