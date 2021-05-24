@@ -52,6 +52,10 @@
           <file file_name="./../Core/Src/stm32f1xx_it.c" />
           <file file_name="./../Core/Src/stm32f1xx_hal_msp.c" />
           <file file_name="../Core/Src/tv_composite.c" />
+          <file file_name="../Core/Src/dma.c" />
+          <file file_name="../Core/Src/gpio.c" />
+          <file file_name="../Core/Src/spi.c" />
+          <file file_name="../Core/Src/tim.c" />
         </folder>
       </folder>
     </folder>
@@ -76,7 +80,7 @@
         <file file_name="./../Core/Src/system_stm32f1xx.c" />
       </folder>
     </folder>
-    <folder Name="EWARM" />
+    <configuration Name="SkyDiv Internal" linker_memory_map_file="" />
   </project>
   <configuration Name="Internal" hidden="Yes" />
   <configuration
