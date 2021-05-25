@@ -51,18 +51,17 @@
           <file file_name="./../Core/Src/main.c" />
           <file file_name="./../Core/Src/stm32f1xx_it.c" />
           <file file_name="./../Core/Src/stm32f1xx_hal_msp.c" />
-          <file file_name="../Core/Src/tv_composite.c" />
-          <file file_name="../Core/Src/dma.c" />
           <file file_name="../Core/Src/gpio.c" />
-          <file file_name="../Core/Src/spi.c" />
-          <file file_name="../Core/Src/tim.c" />
+          <file file_name="../Core/Src/ssd1306_tests.c" />
+          <file file_name="../Core/Src/ssd1306_fonts.c" />
+          <file file_name="../Core/Src/ssd1306.c" />
+          <file file_name="../Core/Src/i2c.c" />
         </folder>
       </folder>
     </folder>
     <folder Name="Drivers">
       <folder Name="STM32F1xx_HAL_Driver">
         <file file_name="./../Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio_ex.c" />
-        <file file_name="./../Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_spi.c" />
         <file file_name="./../Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal.c" />
         <file file_name="./../Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc.c" />
         <file file_name="./../Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc_ex.c" />
@@ -75,6 +74,7 @@
         <file file_name="./../Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_exti.c" />
         <file file_name="./../Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim.c" />
         <file file_name="./../Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim_ex.c" />
+        <file file_name="../Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_i2c.c" />
       </folder>
       <folder Name="CMSIS">
         <file file_name="./../Core/Src/system_stm32f1xx.c" />
