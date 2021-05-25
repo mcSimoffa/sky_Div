@@ -89,15 +89,16 @@ int main(void)
   MX_GPIO_Init();
   MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
-  ssd1306_TestAll();
-
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  while (1)
+  uint16_t att = 125;
+  while (att>0)
   {
-    asm("nop");
+    att--;
+    print_high(att);
+    HAL_Delay(10); 
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
