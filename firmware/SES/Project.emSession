@@ -1,7 +1,7 @@
 <!DOCTYPE CrossStudio_Session_File>
 <session>
  <Bookmarks/>
- <Breakpoints groups="V6M Exceptions" active_group="Breakpoints">
+ <Breakpoints groups="V6M Exceptions;Breakpoints" active_group="Breakpoints">
   <Exceptions set="HardFault"/>
  </Breakpoints>
  <ExecutionProfileWindow/>
@@ -62,10 +62,14 @@
   <Watches active="0" update="Never"/>
  </Watch4>
  <Files>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="66" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="../Core/Src/main.c" selected="1" top="43" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="60" useTextEdit="1" openedFrom="C:/hte/project/sky_Div/firmware/Core/Src/main.c" useBinaryEdit="0" left="0" path="../Core/Inc/main.h" selected="0" top="30" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="16" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="../Core/Inc/ssd1306.h" selected="0" top="0" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="45" y="117" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="../Core/Src/main.c" selected="0" top="83" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="18" y="60" useTextEdit="1" openedFrom="C:/hte/project/sky_Div/firmware/Core/Src/main.c" useBinaryEdit="0" left="0" path="../Core/Inc/main.h" selected="0" top="33" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="745" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="../Core/Src/BMXX80.c" selected="1" top="714" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="17" y="281" useTextEdit="1" openedFrom="C:/hte/project/sky_Div/firmware/Core/Src/main.c" useBinaryEdit="0" left="0" path="../Core/Inc/BMPXX80.h" selected="0" top="0" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="16" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="../Core/Inc/ssd1306.h" selected="0" top="12" codecName="Default"/>
   <SessionOpenFile windowGroup="DockEditLeft" x="0" y="9" useTextEdit="1" openedFrom="C:/hte/project/sky_Div/firmware/Core/Inc/ssd1306.h" useBinaryEdit="0" left="0" path="../Core/Inc/ssd1306_conf.h" selected="0" top="0" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="18" y="1" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="../Core/Src/ssd1306_tests.c" selected="0" top="0" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="4" useTextEdit="1" openedFrom="C:/hte/project/sky_Div/firmware/Core/Src/ssd1306_tests.c" useBinaryEdit="0" left="0" path="../Core/Inc/ssd1306_tests.h" selected="0" top="0" codecName="Default"/>
  </Files>
  <ARMCrossStudioWindow activeProject="skyDiv" fileDialogDefaultFilter="*" autoConnectTarget="J-Link" buildConfiguration="skyDiv Internal" sessionSettings="" debugSearchFileMap="" fileDialogInitialDirectory="C:/hte/project/sky_Div/firmware/Core/Src" debugSearchPath="" autoConnectCapabilities="3199"/>
 </session>
