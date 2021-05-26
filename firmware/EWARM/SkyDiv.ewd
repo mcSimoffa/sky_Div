@@ -2,7 +2,7 @@
 <project>
 	<fileVersion>3</fileVersion>
 	<configuration>
-		<name>SkyDiv</name>
+		<name>skyDiv</name>
 		<toolchain>
 			<name>ARM</name>
 		</toolchain>
@@ -1021,11 +1021,11 @@
 				<option>
 					<name>CCSTLinkResetList</name>
 					<version>3</version>
-					<state>4</state>
+					<state>0</state>
 				</option>
 				<option>
 					<name>CCCpuClockEdit</name>
-					<state>64.0</state>
+					<state>16.0</state>
 				</option>
 				<option>
 					<name>CCSwoClockAuto</name>
