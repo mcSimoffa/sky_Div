@@ -5,14 +5,15 @@
 
 #ifndef __SSD1306_CONF_H__
 #define __SSD1306_CONF_H__
+#include "main.h"
 
 // Choose a microcontroller family
-#define STM32G0
+//#define STM32G0
 //#define STM32F0
 //#define STM32F1
 //#define STM32F4
 //#define STM32L0
-//#define STM32L4
+#define STM32L4
 //#define STM32F3
 //#define STM32H7
 //#define STM32F7
@@ -24,6 +25,8 @@
 // I2C Configuration
 #define SSD1306_I2C_PORT        hi2c1
 #define SSD1306_I2C_ADDR        (0x3C << 1)
+#define SSD1306_Reset_Port      SSD1306_RES_GPIO_Port
+#define SSD1306_Reset_Pin       SSD1306_RES_Pin
 
 // SPI Configuration
 //#define SSD1306_SPI_PORT        hspi1

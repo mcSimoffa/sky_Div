@@ -3,12 +3,17 @@
 #include "ssd1306.h"
 #include "ssd1306_tests.h"
 
+void grid1(uint8_t blank)
+{
+for (uint8_t i=0; i < 127; i+=blank)
+  ssd1306_Line(i, 0, i, 63, White);
+
+for (uint8_t i=0; i < 63; i+=blank)
+  ssd1306_Line(0, i, 127, i, White);
+}
+
 void print_high(uint16_t altitude) 
 {
-  //ssd1306_Fill(White);
-  //ssd1306_UpdateScreen();
-  //return;
-
   char outbuf[4];
   if (altitude >= 10000)
     sprintf(outbuf,"%dk", altitude/1000);

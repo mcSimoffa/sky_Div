@@ -5,8 +5,14 @@
 
 #if defined(SSD1306_USE_I2C)
 
-void ssd1306_Reset(void) {
-    /* for I2C - do nothing */
+void ssd1306_Reset(void) 
+{
+ /* HAL_GPIO_WritePin(SSD1306_Reset_Port, SSD1306_Reset_Pin, GPIO_PIN_SET);
+  HAL_Delay(100);
+  HAL_GPIO_WritePin(SSD1306_Reset_Port, SSD1306_Reset_Pin, GPIO_PIN_RESET);
+  HAL_Delay(30);
+  HAL_GPIO_WritePin(SSD1306_Reset_Port, SSD1306_Reset_Pin, GPIO_PIN_SET);
+  HAL_Delay(10);*/
 }
 
 // Send a byte to the command register
@@ -180,6 +186,9 @@ void ssd1306_Fill(SSD1306_COLOR color) {
         SSD1306_Buffer[i] = (color == Black) ? 0x00 : 0xFF;
     }
 }
+
+
+
 
 // Write the screenbuffer with changed to the screen
 void ssd1306_UpdateScreen(void) {
