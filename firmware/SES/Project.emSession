@@ -1,7 +1,7 @@
 <!DOCTYPE CrossStudio_Session_File>
 <session>
  <Bookmarks/>
- <Breakpoints groups="Breakpoints" active_group="Breakpoints">
+ <Breakpoints groups="Breakpoints;V7M Exceptions" active_group="Breakpoints">
   <BreakpointListItem trigger="" line="2" counter="0" hardwareBreakpoint="" isFunctionBreakpoint="false" action="" expression="" group="Breakpoints" type="Breakpoint" state="4" filename="my_Startup.s" useHWbreakpoint="false"/>
   <Exceptions set="MemManage;UsageFault_Coprocessor;UsageFault_CheckingError;UsageFault_StateError;BusFault;ExceptionEntryReturnFault;HardFault"/>
  </Breakpoints>
@@ -28,6 +28,9 @@
   <ProjectSessionItem path="Project;firmware;Application;EWARM"/>
   <ProjectSessionItem path="Project;firmware;Application;User"/>
   <ProjectSessionItem path="Project;firmware;Application;User;Core"/>
+  <ProjectSessionItem path="Project;firmware;Drivers"/>
+  <ProjectSessionItem path="Project;firmware;Drivers;CMSIS"/>
+  <ProjectSessionItem path="Project;firmware;Drivers;STM32L4xx_HAL_Driver"/>
   <ProjectSessionItem path="Project;firmware;Internal Files"/>
  </Project>
  <Register1>
@@ -50,7 +53,9 @@
  </TraceWindow>
  <Watch1>
   <Watches active="1" update="Never">
-   <Watchpoint expression="var" name="var" radix="10" linenumber="52" filename="../Core/Src/main.c"/>
+   <Watchpoint expression="var" name="var" radix="10" linenumber="50" filename="../Core/Src/main.c"/>
+   <Watchpoint expression="pressure_groung" name="pressure_groung" radix="-1" linenumber="117" filename="../Core/Src/main.c"/>
+   <Watchpoint expression="outbuf" name="outbuf" radix="-1" linenumber="29" filename="../Core/Src/ssd1306_tests.c"/>
   </Watches>
  </Watch1>
  <Watch2>
@@ -63,11 +68,17 @@
   <Watches active="0" update="Never"/>
  </Watch4>
  <Files>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="111" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="../Core/Src/main.c" selected="1" top="81" codecName=""/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="152" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="../Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal.c" selected="0" top="132" codecName=""/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="17" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="../Core/Inc/ssd1306.h" selected="0" top="0" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="14" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="../Core/Src/ssd1306.c" selected="0" top="0" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="18" y="62" useTextEdit="1" openedFrom="C:/hte/project/sky_Div/firmware/Core/Src/main.c" useBinaryEdit="0" left="0" path="../Core/Inc/main.h" selected="0" top="33" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="71" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="../Core/Src/main.c" selected="1" top="51" codecName=""/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="0" useTextEdit="1" openedFrom="C:/hte/project/sky_Div/firmware/Core/Inc/ssd1306_tests.h" useBinaryEdit="0" left="0" path="../Core/Inc/ssd1306.h" selected="0" top="51" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="14" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="../Core/Src/ssd1306.c" selected="0" top="383" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="34" useTextEdit="1" openedFrom="C:/hte/project/sky_Div/firmware/Core/Src/main.c" useBinaryEdit="0" left="0" path="../Core/Inc/main.h" selected="0" top="15" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="58" y="365" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="../Core/Src/BMXX80.c" selected="0" top="327" codecName=""/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="24" y="147" useTextEdit="1" openedFrom="C:/hte/project/sky_Div/firmware/Core/Src/BMXX80.c" useBinaryEdit="0" left="0" path="../Core/Inc/BMPXX80.h" selected="0" top="121" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="15" y="4" useTextEdit="1" openedFrom="C:/hte/project/sky_Div/firmware/Core/Src/main.c" useBinaryEdit="0" left="0" path="../Core/Inc/ssd1306_tests.h" selected="0" top="0" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="9" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="../Core/Src/ssd1306_tests.c" selected="0" top="0" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="89" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="../Core/Src/stm32l4xx_it.c" selected="0" top="69" codecName=""/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="1122" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="../Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc.c" selected="0" top="1102" codecName=""/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="6252" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="../Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_i2c.c" selected="0" top="6277" codecName=""/>
  </Files>
  <ARMCrossStudioWindow activeProject="firmware" fileDialogDefaultFilter="*" autoConnectTarget="J-Link" buildConfiguration="firmware Internal" sessionSettings="" debugSearchFileMap="" fileDialogInitialDirectory="C:/hte/project/sky_Div/firmware/Core/Src" debugSearchPath="" autoConnectCapabilities="3711"/>
 </session>

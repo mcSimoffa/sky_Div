@@ -33,10 +33,8 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#ifdef BME280
-  //#define BME280_I2CADDR  0xEC		// 0x76<<1	SDO -> GND
-  #define BME280_I2CADDR    0xEE		// 0x77<<1	SDO -> VCC
-#endif
+#define TEMPERATURE_MEASURE
+#define CAL_SAMPLES   20
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -73,7 +71,7 @@ static void MX_I2C2_Init(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-  float pressure_groung = 101000;
+  float pressure_groung = 0;
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -97,35 +95,40 @@ int main(void)
   MX_I2C1_Init();
   MX_I2C2_Init();
   /* USER CODE BEGIN 2 */
-#ifdef BME280_1 //TODO
+#ifdef BME280
   BME280_Init(&hi2c2, BME280_TEMPERATURE_16BIT, BME280_PRESSURE_ULTRALOWPOWER, BME280_HUMINIDITY_STANDARD, BME280_NORMALMODE );
   BME280_SetConfig(BME280_STANDBY_MS_10, BME280_FILTER_OFF );
 #endif
   ssd1306_Init();
-  while (1)
-    for (uint8_t i=1; i<8; i++)
-    {
-      ssd1306_Fill(Black);
-      grid1(i);
-      ssd1306_UpdateScreen();
-      HAL_Delay(2000);
-    }
- // print_calState(false);
+  print_calState(false);
+  printf("press button to ground calibration");
   while (HAL_GPIO_ReadPin(BUTTON_GPIO_Port, BUTTON_Pin) == GPIO_PIN_SET)
     asm("nop");
-
+  
   print_calState(true);
-  pressure_groung = 101000; //TODO BME280_ReadPressure();
-  HAL_Delay(3000);
+  for (uint8_t i=0; i<CAL_SAMPLES; i++)
+  {
+    pressure_groung += BME280_ReadPressure();
+    HAL_Delay(100);
+  }
+
+  pressure_groung /= CAL_SAMPLES;
+  printf("\r\ncalibration complete. Pressure = %.2f Pa", pressure_groung);
+  ssd1306_Fill(Black);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-   while (1)
+  float temp_grad = 0;
+  while (1)
   {
-    uint16_t att = (uint16_t)BME280_ReadAltitude(pressure_groung);
+    float att =BME280_ReadAltitude(pressure_groung);
     print_high(att);
-    //HAL_Delay(10); 
+#ifdef TEMPERATURE_MEASURE
+    temp_grad = BME280_ReadTemperature();
+    print_tempr(temp_grad);
+#endif
+    printf("\rattitude = %.2f m. Temperature = %.2f grad C",  att, temp_grad);    
     HAL_GPIO_TogglePin(LED2_GPIO_Port, LED2_Pin);
     /* USER CODE END WHILE */
 
@@ -290,6 +293,7 @@ static void MX_GPIO_Init(void)
   GPIO_InitTypeDef GPIO_InitStruct = {0};
 
   /* GPIO Ports Clock Enable */
+  __HAL_RCC_GPIOC_CLK_ENABLE();
   __HAL_RCC_GPIOH_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
@@ -297,18 +301,18 @@ static void MX_GPIO_Init(void)
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(LED2_GPIO_Port, LED2_Pin, GPIO_PIN_RESET);
 
+  /*Configure GPIO pin : BUTTON_Pin */
+  GPIO_InitStruct.Pin = BUTTON_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
+  HAL_GPIO_Init(BUTTON_GPIO_Port, &GPIO_InitStruct);
+
   /*Configure GPIO pin : LED2_Pin */
   GPIO_InitStruct.Pin = LED2_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(LED2_GPIO_Port, &GPIO_InitStruct);
-
-  /*Configure GPIO pin : BUTTON_Pin */
-  GPIO_InitStruct.Pin = BUTTON_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_PULLUP;
-  HAL_GPIO_Init(BUTTON_GPIO_Port, &GPIO_InitStruct);
 
 }
 

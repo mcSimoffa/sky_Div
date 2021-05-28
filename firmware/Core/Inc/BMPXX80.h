@@ -42,13 +42,13 @@ extern "C" {
 	#endif
 
 	#ifdef BMP280
-		//#define BMP280_I2CADDR	0xEC		// 0x76<<1	SDO -> GND
-		#define BMP280_I2CADDR	0xEE			// 0x77<<1	SDO -> VCC
+		#define BMP280_I2CADDR	0xEC		// 0x76<<1	SDO -> GND
+		//#define BMP280_I2CADDR	0xEE			// 0x77<<1	SDO -> VCC
 	#endif
 
 	#ifdef BME280
-		//#define BME280_I2CADDR	0xEC		// 0x76<<1	SDO -> GND
-		#define BME280_I2CADDR	0xEE			// 0x77<<1	SDO -> VCC
+		#define BME280_I2CADDR	0xEC		// 0x76<<1	SDO -> GND
+		//#define BME280_I2CADDR	0xEE			// 0x77<<1	SDO -> VCC
 	#endif
 	
 	//=======================================================================

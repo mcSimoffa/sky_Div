@@ -3,32 +3,31 @@
 #include "ssd1306.h"
 #include "ssd1306_tests.h"
 
-void grid1(uint8_t blank)
+void print_high(float altitude) 
 {
-for (uint8_t i=0; i < 127; i+=blank)
-  ssd1306_Line(i, 0, i, 63, White);
-
-for (uint8_t i=0; i < 63; i+=blank)
-  ssd1306_Line(0, i, 127, i, White);
+  char outbuf[10];
+  if (altitude >= 10000)
+    sprintf(outbuf,"%dk ", (int)(altitude/1000));
+  else if (altitude > 1000)
+    sprintf(outbuf,"%dk%d ",  (int)(altitude/1000), ((int)altitude%1000)/100);
+  else if (altitude > 100)
+    sprintf(outbuf,"%d ",  (int)altitude);
+  else if (altitude > 10)
+    sprintf(outbuf,"%d ",  (int)altitude);
+  else if (altitude >= 1)
+    sprintf(outbuf,"%.2f ", altitude);
+  else 
+    sprintf(outbuf,"GND    ", altitude);
+  ssd1306_SetCursor(36, 4);
+  ssd1306_WriteString(outbuf, Font_6x8, White);
+  ssd1306_UpdateScreen();
 }
 
-void print_high(uint16_t altitude) 
+void print_tempr(float tempr) 
 {
-  char outbuf[4];
-  if (altitude >= 10000)
-    sprintf(outbuf,"%dk", altitude/1000);
-  else if (altitude > 1000)
-    sprintf(outbuf,"%dk%d", altitude/1000, (altitude%1000)/100);
-  else if (altitude > 100)
-    sprintf(outbuf,"%d", altitude);
-  else if (altitude > 10)
-    sprintf(outbuf,"%d ", altitude);
-  else if (altitude > 1)
-    sprintf(outbuf," %d ", altitude);
-  else 
-    sprintf(outbuf,"GND", altitude);
-
-  ssd1306_SetCursor(54, 4);
+  char outbuf[10];
+   snprintf(outbuf, 9, "T=%.2f", tempr);
+   ssd1306_SetCursor(36, 12);
   ssd1306_WriteString(outbuf, Font_6x8, White);
   ssd1306_UpdateScreen();
 }
@@ -40,7 +39,7 @@ void print_calState(bool state)
     sprintf(outbuf,"CAL");
   else
     sprintf(outbuf,"NOT");
-
+  ssd1306_Fill(Black);
   ssd1306_SetCursor(54, 4);
   ssd1306_WriteString(outbuf, Font_6x8, White);
   ssd1306_UpdateScreen();

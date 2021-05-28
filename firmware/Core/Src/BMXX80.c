@@ -363,7 +363,7 @@ void BME280_Init(I2C_HandleTypeDef *i2c_handler, uint8_t temperature_resolution,
 
 	if(mode == BME280_NORMALMODE)
 	{
-		BME280_SetConfig(BME280_STANDBY_MS_0_5, BME280_FILTER_OFF);
+		BME280_SetConfig(BME280_STANDBY_MS_0_5, BME280_FILTER_X8);
 	}
 }
 #endif

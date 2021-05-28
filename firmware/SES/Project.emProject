@@ -94,8 +94,11 @@
     </folder>
     <configuration
       Name="firmware Internal"
+      c_additional_options=""
       c_preprocessor_definitions="BME280"
-      gcc_entry_point="_start" />
+      gcc_entry_point="_start"
+      linker_printf_fp_enabled="Float"
+      linker_scanf_fp_enabled="Yes" />
   </project>
   <configuration Name="Internal" hidden="Yes" />
   <configuration
