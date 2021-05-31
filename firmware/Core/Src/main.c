@@ -100,7 +100,8 @@ int main(void)
   BME280_SetConfig(BME280_STANDBY_MS_10, BME280_FILTER_OFF );
 #endif
   ssd1306_Init();
-  print_calState(false);
+  //print_calState(false);
+  print_frame();
   printf("press button to ground calibration");
   while (HAL_GPIO_ReadPin(BUTTON_GPIO_Port, BUTTON_Pin) == GPIO_PIN_SET)
     asm("nop");

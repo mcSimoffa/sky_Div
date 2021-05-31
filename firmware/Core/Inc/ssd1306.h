@@ -42,63 +42,13 @@
 
 /* vvv I2C config vvv */
 
-#ifndef SSD1306_I2C_PORT
-#define SSD1306_I2C_PORT        hi2c1
-#endif
-
-#ifndef SSD1306_I2C_ADDR
-#define SSD1306_I2C_ADDR        (0x3C << 1)
-#endif
-
-/* ^^^ I2C config ^^^ */
-
-/* vvv SPI config vvv */
-
-#ifndef SSD1306_SPI_PORT
-#define SSD1306_SPI_PORT        hspi2
-#endif
-
-#ifndef SSD1306_CS_Port
-#define SSD1306_CS_Port         GPIOB
-#endif
-#ifndef SSD1306_CS_Pin
-#define SSD1306_CS_Pin          GPIO_PIN_12
-#endif
-
-#ifndef SSD1306_DC_Port
-#define SSD1306_DC_Port         GPIOB
-#endif
-#ifndef SSD1306_DC_Pin
-#define SSD1306_DC_Pin          GPIO_PIN_14
-#endif
-
-#ifndef SSD1306_Reset_Port
-#define SSD1306_Reset_Port      GPIOA
-#endif
-#ifndef SSD1306_Reset_Pin
-#define SSD1306_Reset_Pin       GPIO_PIN_8
-#endif
-
-/* ^^^ SPI config ^^^ */
-
 #if defined(SSD1306_USE_I2C)
 extern I2C_HandleTypeDef SSD1306_I2C_PORT;
-#elif defined(SSD1306_USE_SPI)
-extern SPI_HandleTypeDef SSD1306_SPI_PORT;
-#else
-#error "You should define SSD1306_USE_SPI or SSD1306_USE_I2C macro!"
 #endif
 
 // SSD1306 OLED height in pixels
-//менять безсмысленно - будет развертка через строку, как лестница
-#ifndef SSD1306_HEIGHT
-#define SSD1306_HEIGHT          64
-#endif
-
-// SSD1306 width in pixels
-#ifndef SSD1306_WIDTH
-#define SSD1306_WIDTH           128
-#endif
+#define SSD1306_HEIGHT          40
+#define SSD1306_WIDTH           72
 
 #ifndef SSD1306_BUFFER_SIZE
 #define SSD1306_BUFFER_SIZE   SSD1306_WIDTH * SSD1306_HEIGHT / 8
@@ -165,6 +115,8 @@ void ssd1306_Reset(void);
 void ssd1306_WriteCommand(uint8_t byte);
 void ssd1306_WriteData(uint8_t* buffer, size_t buff_size);
 SSD1306_Error_t ssd1306_FillBuffer(uint8_t* buf, uint32_t len);
+
+void print_frame();
 
 //_END_STD_C
 
