@@ -118,16 +118,6 @@ void ssd1306_Init(void)
     //ssd1306_WriteCommand(0xA8); //--set multiplex ratio(1 to 64) - CHECK
 #endif
 
-#if (SSD1306_HEIGHT == 32)
-    ssd1306_WriteCommand(0x1F); //
-#elif (SSD1306_HEIGHT == 64)
-    ssd1306_WriteCommand(0x3F); //
-#elif (SSD1306_HEIGHT == 128)
-    ssd1306_WriteCommand(0x3F); // Seems to work for 128px high displays too.
-#else
-//#error "Only 32, 64, or 128 lines of height are supported!"
-#endif
-
     ssd1306_WriteCommand(0xA4); //0xa4,Output follows RAM content;0xa5,Output ignores RAM content
 
    //ssd1306_WriteCommand(0xD5); //--set display clock divide ratio/oscillator frequency
@@ -135,17 +125,6 @@ void ssd1306_Init(void)
 
     ssd1306_WriteCommand(0xD9); //--set pre-charge period
     ssd1306_WriteCommand(0x01); //
-
-   // ssd1306_WriteCommand(0xDA); //--set com pins hardware configuration - CHECK
-#if (SSD1306_HEIGHT == 32)
-    ssd1306_WriteCommand(0x02);
-#elif (SSD1306_HEIGHT == 64)
-    ssd1306_WriteCommand(0x12);
-#elif (SSD1306_HEIGHT == 128)
-    ssd1306_WriteCommand(0x12);
-#else
-//#error "Only 32, 64, or 128 lines of height are supported!"
-#endif
 
     ssd1306_WriteCommand(0xDB); //--set vcomh
     ssd1306_WriteCommand(0x30); //0x20,0.77xVcc
@@ -185,12 +164,12 @@ void ssd1306_Fill(SSD1306_COLOR color){
 void ssd1306_UpdateScreen(void) 
 {
     ssd1306_WriteCommand(0x21);
-    ssd1306_WriteCommand(28); // begin col
-    ssd1306_WriteCommand(99); // end col
+    ssd1306_WriteCommand(BEGIN_COL); // begin col
+    ssd1306_WriteCommand(END_COL); // end col
     
     ssd1306_WriteCommand(0x22);
-    ssd1306_WriteCommand(3);  //begin page (row=8*page)
-    ssd1306_WriteCommand(7); //end page
+    ssd1306_WriteCommand(BEGIN_PAGE);  //begin page (row=8*page)
+    ssd1306_WriteCommand(END_PAGE); //end page
     ssd1306_WriteData(SSD1306_Buffer,sizeof(SSD1306_Buffer));
 }
 
@@ -469,14 +448,10 @@ uint8_t ssd1306_GetDisplayOn()
 
 void print_frame()
 {
-  ssd1306_Line(0,0,71,39,White);
+  ssd1306_DrawRectangle(0, 0, 71, 39, White);
   ssd1306_UpdateScreen();
-  for (uint32_t i=0; i<sizeof(SSD1306_Buffer); i++)
-  {
-    SSD1306_Buffer[i]=0xAA;
-    ssd1306_UpdateScreen();
-  }
-
-  for (uint8_t i=0; ; i++)
-      ssd1306_SetContrast(i);
+  ssd1306_SetCursor(4,7);
+  ssd1306_WriteString("7100", Font_16x26,White);
+  ssd1306_UpdateScreen();
+  asm("nop");
 }

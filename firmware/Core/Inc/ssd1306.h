@@ -41,18 +41,22 @@
 #include "ssd1306_fonts.h"
 
 /* vvv I2C config vvv */
-
 #if defined(SSD1306_USE_I2C)
 extern I2C_HandleTypeDef SSD1306_I2C_PORT;
 #endif
 
-// SSD1306 OLED height in pixels
-#define SSD1306_HEIGHT          40
-#define SSD1306_WIDTH           72
+// SSD1306 resolution configuration
+//-------------------------------------
+#define SSD1306_HEIGHT          40  //|
+#define SSD1306_WIDTH           72  //|
+#define BEGIN_COL               28  //|
+#define BEGIN_PAGE              3   //|
+//-------------------------------------
 
-#ifndef SSD1306_BUFFER_SIZE
-#define SSD1306_BUFFER_SIZE   SSD1306_WIDTH * SSD1306_HEIGHT / 8
-#endif
+#define END_COL                 (BEGIN_COL+SSD1306_WIDTH - 1)
+#define END_PAGE                (BEGIN_PAGE + SSD1306_HEIGHT/8 - 1)
+#define SSD1306_BUFFER_SIZE     SSD1306_WIDTH * SSD1306_HEIGHT / 8
+
 
 // Enumeration for screen colors
 typedef enum {
@@ -66,14 +70,17 @@ typedef enum {
 } SSD1306_Error_t;
 
 // Struct to store transformations
-typedef struct {
+typedef struct 
+{
     uint16_t CurrentX;
     uint16_t CurrentY;
     uint8_t Inverted;
     uint8_t Initialized;
     uint8_t DisplayOn;
 } SSD1306_t;
-typedef struct {
+
+typedef struct 
+{
     uint8_t x;
     uint8_t y;
 } SSD1306_VERTEX;
