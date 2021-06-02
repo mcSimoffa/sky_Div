@@ -220,7 +220,7 @@ char ssd1306_WriteChar(char ch, FontDef Font, SSD1306_COLOR color)
     // Use the font to write
     for(i = 0; i < Font.FontHeight; i++) 
     {
-      uint8_t *p_b = (uint8_t*)Font.data + (ch-32)*Font.With_in_bytes*Font.FontHeight + i*Font.With_in_bytes;
+      uint8_t *p_b = (uint8_t*)Font.data + (ch-Font.min_code)*Font.With_in_bytes*Font.FontHeight + i*Font.With_in_bytes;
       for(j = 0; j < Font.FontWidth; j++) 
       {
         uint8_t b = *(p_b+j/8);
@@ -450,7 +450,7 @@ void print_frame()
   ssd1306_DrawRectangle(0, 0, 71, 39, White);
   ssd1306_UpdateScreen();
   ssd1306_SetCursor(4,7);
-  ssd1306_WriteString("7100", Font_12x22,White);
+  ssd1306_WriteString("7100", Font_12x22, White);
   ssd1306_UpdateScreen();
   asm("nop");
 }

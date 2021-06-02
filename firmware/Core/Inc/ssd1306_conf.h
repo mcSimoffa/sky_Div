@@ -42,7 +42,7 @@
 // # define SSD1306_INVERSE_COLOR
 
 // Include only needed fonts
-//#define SSD1306_INCLUDE_FONT_18x21
+#define SSD1306_INCLUDE_FONT_18x21
 #define SSD1306_INCLUDE_FONT_12x22
 
 #endif /* __SSD1306_CONF_H__ */

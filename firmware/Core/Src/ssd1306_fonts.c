@@ -2191,8 +2191,11 @@ static const uint8_t Font18x21[] =
 	0x00, 0x00, 0x00, //                   
 	0x00, 0x00, 0x00, //                   
 };
-FontDef Font_18x21 = {.FontHeight=18, .FontWidth=21, .With_in_bytes=3, .max_code=126, .min_code=32, .data=Font18x21};
+FontDef Font_18x21 = {.FontHeight=21, .FontWidth=18, .With_in_bytes=3, .max_code=126, .min_code=32, .data=Font18x21};
 #endif
+
+
+//----------------------------------------------------------------------------------------------------------------------
 
 #ifdef SSD1306_INCLUDE_FONT_12x22
 /* Character bitmaps for Bodoni MT Condensed 18pt */
@@ -4479,6 +4482,6 @@ const uint8_t Font12x22[] =
 	0x00, 0x00, //                
 };
 
-FontDef Font_12x22 = {.FontHeight=12, .FontWidth=22, .With_in_bytes=2, .max_code=126, .min_code=32, .data=Font12x22};
+FontDef Font_12x22 = {.FontHeight=22, .FontWidth=12, .With_in_bytes=2, .max_code=126, .min_code=32, .data=Font12x22};
 #endif
 
