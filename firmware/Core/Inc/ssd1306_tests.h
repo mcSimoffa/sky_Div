@@ -6,14 +6,20 @@
 typedef enum
 {
   FIT_LEFT,
-  FIT_RIGHT,
-  BATTERY
+  FIT_RIGHT
 } bar_type_t;
 
-void print_high(float altitude);
-void print_calState(bool state);
-void print_tempr(float tempr);
+void altitude_display(int16_t altitude);
+void tempr_display(int8_t tempr);
 
 void progress_bar(bar_type_t _type, uint8_t level);
 
+void battery_bar(int8_t level);
+/*---------------------------------------------
+function for display time like HH:MM
+it should launck once per second for bliking ':'
+correctly
+parameter hours and mins in RTC_FORMAT_BIN
+---------------------------------------------- */
+void time_display(uint8_t _hour, uint8_t _min);
 #endif // __SSD1306_TEST_H__

@@ -13,6 +13,7 @@ typedef struct
         uint8_t       min_code;
         uint8_t       max_code;
 	const uint8_t *data; /*!< Pointer to data font data array */
+        const uint8_t *withtable;
 } FontDef;
 
 #ifdef SSD1306_INCLUDE_FONT_12x22
@@ -22,5 +23,10 @@ extern FontDef Font_12x22;
 #ifdef SSD1306_INCLUDE_FONT_18x21
 extern FontDef Font_18x21;
 #endif
+
+#ifdef SSD1306_INCLUDE_FONT_6x8
+extern FontDef Font_6x8;
+#endif
+
 
 #endif // __SSD1306_FONTS_H__

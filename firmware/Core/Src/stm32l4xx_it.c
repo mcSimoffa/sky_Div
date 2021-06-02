@@ -23,6 +23,7 @@
 #include "stm32l4xx_it.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "ssd1306_tests.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -42,7 +43,7 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN PV */
-
+RTC_TimeTypeDef now_time;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -184,7 +185,17 @@ void PendSV_Handler(void)
 void SysTick_Handler(void)
 {
   /* USER CODE BEGIN SysTick_IRQn 0 */
-
+  static uint16_t c=0;
+  extern RTC_HandleTypeDef hrtc;
+  if(++c >= REFRSH_PERIOD_MS)
+  {
+    c = 0;
+    if (HAL_RTC_GetTime (&hrtc, &now_time, RTC_FORMAT_BIN) == HAL_OK)
+    {
+      pass_to_main_context (now_time.Hours, now_time.Minutes);
+      HAL_GPIO_TogglePin(LED2_GPIO_Port, LED2_Pin);
+    }
+  }
   /* USER CODE END SysTick_IRQn 0 */
   HAL_IncTick();
   /* USER CODE BEGIN SysTick_IRQn 1 */

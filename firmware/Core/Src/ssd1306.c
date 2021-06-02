@@ -148,13 +148,9 @@ void ssd1306_Init(void)
 }
 
 // Fill the whole screen with the given color
-void ssd1306_Fill(SSD1306_COLOR color){
-    /* Set memory */
-    uint32_t i;
-
-    for(i = 0; i < sizeof(SSD1306_Buffer); i++) {
-        SSD1306_Buffer[i] = (color == Black) ? 0x00 : 0xFF;
-    }
+void ssd1306_Fill(SSD1306_COLOR color)
+{
+  memset(SSD1306_Buffer,(color == Black) ? 0x00 : 0xFF, sizeof(SSD1306_Buffer));
 }
 
 
@@ -211,9 +207,13 @@ char ssd1306_WriteChar(char ch, FontDef Font, SSD1306_COLOR color)
     // Check if character is valid
     if (ch < Font.min_code || ch > Font.max_code)
         return 0;
-    
+    uint8_t individual_with = Font.FontWidth;
+
+    if (Font.withtable)
+      individual_with = Font.withtable[ch-Font.min_code];
+
     // Check remaining space on current line
-    if (SSD1306_WIDTH < (SSD1306.CurrentX + Font.FontWidth) ||
+    if (SSD1306_WIDTH < (SSD1306.CurrentX + individual_with) ||
         SSD1306_HEIGHT < (SSD1306.CurrentY + Font.FontHeight))   
       return 0; // Not enough space on current line
     
@@ -221,7 +221,7 @@ char ssd1306_WriteChar(char ch, FontDef Font, SSD1306_COLOR color)
     for(i = 0; i < Font.FontHeight; i++) 
     {
       uint8_t *p_b = (uint8_t*)Font.data + (ch-Font.min_code)*Font.With_in_bytes*Font.FontHeight + i*Font.With_in_bytes;
-      for(j = 0; j < Font.FontWidth; j++) 
+      for(j = 0; j < individual_with; j++) 
       {
         uint8_t b = *(p_b+j/8);
         if((b << j%8) & 0x80)
@@ -232,7 +232,7 @@ char ssd1306_WriteChar(char ch, FontDef Font, SSD1306_COLOR color)
     }
     
     // The current space is now taken
-    SSD1306.CurrentX += Font.FontWidth;
+    SSD1306.CurrentX += individual_with;
     
     // Return written char for validation
     return ch;
@@ -443,14 +443,4 @@ void ssd1306_SetDisplayOn(const uint8_t on)
 uint8_t ssd1306_GetDisplayOn() 
 {
     return SSD1306.DisplayOn;
-}
-
-void print_frame()
-{
-  ssd1306_DrawRectangle(0, 0, 71, 39, White);
-  ssd1306_UpdateScreen();
-  ssd1306_SetCursor(4,7);
-  ssd1306_WriteString("7100", Font_12x22, White);
-  ssd1306_UpdateScreen();
-  asm("nop");
 }

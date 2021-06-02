@@ -22,6 +22,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include <stdio.h>
 #include "ssd1306_tests.h"
 #include "BMPXX80.h"
 /* USER CODE END Includes */
@@ -46,8 +47,11 @@
 I2C_HandleTypeDef hi2c1;
 I2C_HandleTypeDef hi2c2;
 
-/* USER CODE BEGIN PV */
+RTC_HandleTypeDef hrtc;
 
+/* USER CODE BEGIN PV */
+bool update_flag = false;
+uint8_t _hour, _minute;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -55,6 +59,7 @@ void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_I2C1_Init(void);
 static void MX_I2C2_Init(void);
+static void MX_RTC_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -69,6 +74,7 @@ static void MX_I2C2_Init(void);
   * @retval int
   */
 int main(void)
+
 {
   /* USER CODE BEGIN 1 */
   float pressure_groung = 0;
@@ -94,43 +100,73 @@ int main(void)
   MX_GPIO_Init();
   MX_I2C1_Init();
   MX_I2C2_Init();
+  MX_RTC_Init();
   /* USER CODE BEGIN 2 */
+  float null_level_pa =42000;
 #ifdef BME280
   BME280_Init(&hi2c2, BME280_TEMPERATURE_16BIT, BME280_PRESSURE_ULTRALOWPOWER, BME280_HUMINIDITY_STANDARD, BME280_NORMALMODE );
   BME280_SetConfig(BME280_STANDBY_MS_10, BME280_FILTER_OFF );
 #endif
   ssd1306_Init();
   //print_calState(false);
-  print_frame();
-  printf("press button to ground calibration");
-  while (HAL_GPIO_ReadPin(BUTTON_GPIO_Port, BUTTON_Pin) == GPIO_PIN_SET)
-    asm("nop");
+  //print_frame();
+  //printf("press button to ground calibration");
+  //while (HAL_GPIO_ReadPin(BUTTON_GPIO_Port, BUTTON_Pin) == GPIO_PIN_SET)
+  //  asm("nop");
   
-  print_calState(true);
-  for (uint8_t i=0; i<CAL_SAMPLES; i++)
-  {
-    pressure_groung += BME280_ReadPressure();
-    HAL_Delay(100);
-  }
+  //print_calState(true);
+  //for (uint8_t i=0; i<CAL_SAMPLES; i++)
+ // {
+  //  pressure_groung += BME280_ReadPressure();
+  //  HAL_Delay(100);
+  //}
 
-  pressure_groung /= CAL_SAMPLES;
-  printf("\r\ncalibration complete. Pressure = %.2f Pa", pressure_groung);
+  //pressure_groung /= CAL_SAMPLES;
+  //printf("\r\ncalibration complete. Pressure = %.2f Pa", pressure_groung);
   ssd1306_Fill(Black);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  float temp_grad = 0;
+  //float temp_grad = 0;
   while (1)
   {
-    float att =BME280_ReadAltitude(pressure_groung);
-    print_high(att);
+    while (!update_flag)
+    {
+    //sleep
+    }
+    update_flag = false;
+
+    float _tmpr;
+    int32_t _pressure;
+    float _humin;
+    BME280_ReadTemperatureAndPressureAndHuminidity(&_tmpr, &_pressure, &_humin);
+    float altitude = 44330*(1.0-pow(_pressure/null_level_pa, 0.1903));
+    ssd1306_Fill(Black);
+    tempr_display((uint8_t)_tmpr);
+    time_display(_hour, _minute);
+    altitude_display((int16_t)altitude);
+    static uint8_t k=0;
+    progress_bar(FIT_LEFT, k);
+    progress_bar(FIT_RIGHT, k);
+    if(++k>8)
+      k=0;
+
+    static uint8_t bl=0;
+    battery_bar(bl);
+    if(++bl>3)
+      bl=0;
+
+    ssd1306_UpdateScreen();
+
+    //float att =BME280_ReadAltitude(pressure_groung);
+    //print_high(att);
 #ifdef TEMPERATURE_MEASURE
-    temp_grad = BME280_ReadTemperature();
-    print_tempr(temp_grad);
+   // temp_grad = BME280_ReadTemperature();
+    //print_tempr(temp_grad);
 #endif
-    printf("\rattitude = %.2f m. Temperature = %.2f grad C",  att, temp_grad);    
-    HAL_GPIO_TogglePin(LED2_GPIO_Port, LED2_Pin);
+    //printf("\rattitude = %.2f m. Temperature = %.2f grad C",  att, temp_grad);    
+    //HAL_GPIO_TogglePin(LED2_GPIO_Port, LED2_Pin);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -148,11 +184,16 @@ void SystemClock_Config(void)
   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
   RCC_PeriphCLKInitTypeDef PeriphClkInit = {0};
 
+  /** Configure LSE Drive Capability
+  */
+  HAL_PWR_EnableBkUpAccess();
+  __HAL_RCC_LSEDRIVE_CONFIG(RCC_LSEDRIVE_LOW);
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
   */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE|RCC_OSCILLATORTYPE_LSE;
   RCC_OscInitStruct.HSEState = RCC_HSE_ON;
+  RCC_OscInitStruct.LSEState = RCC_LSE_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
   RCC_OscInitStruct.PLL.PLLM = 1;
@@ -177,9 +218,11 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
-  PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_I2C1|RCC_PERIPHCLK_I2C2;
+  PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_RTC|RCC_PERIPHCLK_I2C1
+                              |RCC_PERIPHCLK_I2C2;
   PeriphClkInit.I2c1ClockSelection = RCC_I2C1CLKSOURCE_PCLK1;
   PeriphClkInit.I2c2ClockSelection = RCC_I2C2CLKSOURCE_PCLK1;
+  PeriphClkInit.RTCClockSelection = RCC_RTCCLKSOURCE_LSE;
   if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK)
   {
     Error_Handler();
@@ -208,7 +251,7 @@ static void MX_I2C1_Init(void)
 
   /* USER CODE END I2C1_Init 1 */
   hi2c1.Instance = I2C1;
-  hi2c1.Init.Timing = 0x10707DBC;
+  hi2c1.Init.Timing = 0x00300B29;
   hi2c1.Init.OwnAddress1 = 0;
   hi2c1.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
   hi2c1.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
@@ -232,6 +275,9 @@ static void MX_I2C1_Init(void)
   {
     Error_Handler();
   }
+  /** I2C Fast mode Plus enable
+  */
+  HAL_I2CEx_EnableFastModePlus(I2C_FASTMODEPLUS_I2C1);
   /* USER CODE BEGIN I2C1_Init 2 */
 
   /* USER CODE END I2C1_Init 2 */
@@ -285,6 +331,41 @@ static void MX_I2C2_Init(void)
 }
 
 /**
+  * @brief RTC Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_RTC_Init(void)
+{
+
+  /* USER CODE BEGIN RTC_Init 0 */
+
+  /* USER CODE END RTC_Init 0 */
+
+  /* USER CODE BEGIN RTC_Init 1 */
+
+  /* USER CODE END RTC_Init 1 */
+  /** Initialize RTC Only
+  */
+  hrtc.Instance = RTC;
+  hrtc.Init.HourFormat = RTC_HOURFORMAT_24;
+  hrtc.Init.AsynchPrediv = 127;
+  hrtc.Init.SynchPrediv = 255;
+  hrtc.Init.OutPut = RTC_OUTPUT_DISABLE;
+  hrtc.Init.OutPutRemap = RTC_OUTPUT_REMAP_NONE;
+  hrtc.Init.OutPutPolarity = RTC_OUTPUT_POLARITY_HIGH;
+  hrtc.Init.OutPutType = RTC_OUTPUT_TYPE_OPENDRAIN;
+  if (HAL_RTC_Init(&hrtc) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN RTC_Init 2 */
+
+  /* USER CODE END RTC_Init 2 */
+
+}
+
+/**
   * @brief GPIO Initialization Function
   * @param None
   * @retval None
@@ -318,7 +399,14 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
+void pass_to_main_context(uint8_t hour, uint8_t min)
+{
+  _hour=hour;
+  _minute=min;
+  update_flag = true;
 
+
+}
 /* USER CODE END 4 */
 
 /**
