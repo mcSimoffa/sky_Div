@@ -18,8 +18,8 @@ void print_high(float altitude)
     sprintf(outbuf,"%.2f ", altitude);
   else 
     sprintf(outbuf,"GND    ", altitude);
-  ssd1306_SetCursor(36, 4);
-  ssd1306_WriteString(outbuf, Font_6x8, White);
+ // ssd1306_SetCursor(36, 4);
+ // ssd1306_WriteString(outbuf, Font_6x8, White);
   ssd1306_UpdateScreen();
 }
 
@@ -27,8 +27,8 @@ void print_tempr(float tempr)
 {
   char outbuf[10];
    snprintf(outbuf, 9, "T=%.2f", tempr);
-   ssd1306_SetCursor(36, 12);
-  ssd1306_WriteString(outbuf, Font_6x8, White);
+  // ssd1306_SetCursor(36, 12);
+ // ssd1306_WriteString(outbuf, Font_6x8, White);
   ssd1306_UpdateScreen();
 }
 
@@ -41,7 +41,7 @@ void print_calState(bool state)
     sprintf(outbuf,"NOT");
   ssd1306_Fill(Black);
   ssd1306_SetCursor(54, 4);
-  ssd1306_WriteString(outbuf, Font_6x8, White);
+  ssd1306_WriteString(outbuf, Font_12x22, White);
   ssd1306_UpdateScreen();
 }
 

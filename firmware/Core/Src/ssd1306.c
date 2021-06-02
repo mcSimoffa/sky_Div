@@ -206,30 +206,29 @@ void ssd1306_DrawPixel(uint8_t x, uint8_t y, SSD1306_COLOR color)
 // color    => Black or White
 char ssd1306_WriteChar(char ch, FontDef Font, SSD1306_COLOR color) 
 {
-    uint32_t i, b, j;
+    uint32_t i, j;
     
     // Check if character is valid
-    if (ch < 32 || ch > 126)
+    if (ch < Font.min_code || ch > Font.max_code)
         return 0;
     
     // Check remaining space on current line
     if (SSD1306_WIDTH < (SSD1306.CurrentX + Font.FontWidth) ||
-        SSD1306_HEIGHT < (SSD1306.CurrentY + Font.FontHeight))
-    {
-        // Not enough space on current line
-        return 0;
-    }
+        SSD1306_HEIGHT < (SSD1306.CurrentY + Font.FontHeight))   
+      return 0; // Not enough space on current line
     
     // Use the font to write
-    for(i = 0; i < Font.FontHeight; i++) {
-        b = Font.data[(ch - 32) * Font.FontHeight + i];
-        for(j = 0; j < Font.FontWidth; j++) {
-            if((b << j) & 0x8000)  {
-                ssd1306_DrawPixel(SSD1306.CurrentX + j, (SSD1306.CurrentY + i), (SSD1306_COLOR) color);
-            } else {
-                ssd1306_DrawPixel(SSD1306.CurrentX + j, (SSD1306.CurrentY + i), (SSD1306_COLOR)!color);
-            }
-        }
+    for(i = 0; i < Font.FontHeight; i++) 
+    {
+      uint8_t *p_b = (uint8_t*)Font.data + (ch-32)*Font.With_in_bytes*Font.FontHeight + i*Font.With_in_bytes;
+      for(j = 0; j < Font.FontWidth; j++) 
+      {
+        uint8_t b = *(p_b+j/8);
+        if((b << j%8) & 0x80)
+            ssd1306_DrawPixel(SSD1306.CurrentX + j, (SSD1306.CurrentY + i), (SSD1306_COLOR) color);
+        else 
+            ssd1306_DrawPixel(SSD1306.CurrentX + j, (SSD1306.CurrentY + i), (SSD1306_COLOR)!color);
+      }
     }
     
     // The current space is now taken
@@ -451,7 +450,7 @@ void print_frame()
   ssd1306_DrawRectangle(0, 0, 71, 39, White);
   ssd1306_UpdateScreen();
   ssd1306_SetCursor(4,7);
-  ssd1306_WriteString("7100", Font_16x26,White);
+  ssd1306_WriteString("7100", Font_12x22,White);
   ssd1306_UpdateScreen();
   asm("nop");
 }
