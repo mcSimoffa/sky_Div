@@ -23,6 +23,9 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <stdio.h>
+#include "app_timer.h"
+#include "oring_buf.h"
+#include "stm32l4xx_it.h"
 #include "ssd1306_tests.h"
 #include "BMPXX80.h"
 /* USER CODE END Includes */
@@ -74,8 +77,6 @@ static void MX_RTC_Init(void);
   * @retval int
   */
 int main(void)
-
-
 {
   /* USER CODE BEGIN 1 */
   float pressure_groung = 0;
@@ -103,10 +104,11 @@ int main(void)
   MX_I2C2_Init();
   MX_RTC_Init();
   /* USER CODE BEGIN 2 */
+  button_timers_init();
   float null_level_pa =42000;
 #ifdef BME280
   BME280_Init(&hi2c2, BME280_TEMPERATURE_16BIT, BME280_PRESSURE_ULTRALOWPOWER, BME280_HUMINIDITY_STANDARD, BME280_NORMALMODE );
-  BME280_SetConfig(BME280_STANDBY_MS_10, BME280_FILTER_OFF );
+  BME280_SetConfig(BME280_STANDBY_MS_10, BME280_FILTER_X8 );
 #endif
   ssd1306_Init();
   //print_calState(false);
@@ -137,7 +139,9 @@ int main(void)
     //sleep
     }
     update_flag = false;
-
+    uint32_t got_event;
+    if(oring_buf_get(&got_event))
+      printf("event %d\r\n", got_event);
     float _tmpr;
     int32_t _pressure;
     float _humin;
@@ -146,7 +150,7 @@ int main(void)
     ssd1306_Fill(Black);
     tempr_display((uint8_t)_tmpr);
     time_display(_hour, _minute);
-    altitude_display((int16_t)altitude);
+    altitude_display((int16_t)altitude, true);
     static uint8_t k=0;
     progress_bar(FIT_LEFT, k);
     progress_bar(FIT_RIGHT, k);
@@ -159,15 +163,7 @@ int main(void)
       bl=0;
 
     ssd1306_UpdateScreen();
-
-    //float att =BME280_ReadAltitude(pressure_groung);
-    //print_high(att);
-#ifdef TEMPERATURE_MEASURE
-   // temp_grad = BME280_ReadTemperature();
-    //print_tempr(temp_grad);
-#endif
-    //printf("\rattitude = %.2f m. Temperature = %.2f grad C",  att, temp_grad);    
-    //HAL_GPIO_TogglePin(LED2_GPIO_Port, LED2_Pin);
+    printf("\ralttitude = %.2f m. Temperature = %.2f grad C",  altitude,_tmpr);    
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -384,11 +380,17 @@ static void MX_GPIO_Init(void)
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(LED2_GPIO_Port, LED2_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pin : BUTTON_Pin */
-  GPIO_InitStruct.Pin = BUTTON_Pin;
+  /*Configure GPIO pin : BLUE_BUTTON_Pin */
+  GPIO_InitStruct.Pin = BLUE_BUTTON_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
-  HAL_GPIO_Init(BUTTON_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(BLUE_BUTTON_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : BUTTON_UP_Pin BUTTON_DOWN_Pin BUTTON_CENTER_Pin */
+  GPIO_InitStruct.Pin = BUTTON_UP_Pin|BUTTON_DOWN_Pin|BUTTON_CENTER_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING_FALLING;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
   /*Configure GPIO pin : LED2_Pin */
   GPIO_InitStruct.Pin = LED2_Pin;
@@ -396,6 +398,16 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(LED2_GPIO_Port, &GPIO_InitStruct);
+
+  /* EXTI interrupt init*/
+  HAL_NVIC_SetPriority(EXTI0_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(EXTI0_IRQn);
+
+  HAL_NVIC_SetPriority(EXTI1_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(EXTI1_IRQn);
+
+  HAL_NVIC_SetPriority(EXTI2_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(EXTI2_IRQn);
 
 }
 

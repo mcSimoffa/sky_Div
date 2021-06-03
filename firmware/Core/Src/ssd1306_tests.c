@@ -3,13 +3,22 @@
 #include "ssd1306.h"
 #include "ssd1306_tests.h"
 //---------------------------------------------------------------
-void altitude_display(int16_t altitude)
+void altitude_display(int16_t altitude, bool unitKilometrs)
 {
-#define alt_start_col 9
-#define alt_start_row 10
-  char outbuf[10];
-  sprintf(outbuf,"%04d", altitude);
-  ssd1306_SetCursor(alt_start_col, alt_start_row);
+#define ALT_START_ROW 15
+  char outbuf[8];
+  if (unitKilometrs)
+    sprintf(outbuf,"%.1f", (float)altitude/1000);
+  else
+    sprintf(outbuf,"%04d", altitude);
+
+  // centering
+  uint8_t  pexel_len=0;
+  for (uint8_t i=0; outbuf[i]; i++)
+    pexel_len += Font_12x22.withtable[outbuf[i]-Font_12x22.min_code];
+  uint8_t col_start = (SSD1306_WIDTH-pexel_len)/2;
+
+  ssd1306_SetCursor(col_start, ALT_START_ROW);
   ssd1306_WriteString(outbuf, Font_12x22, White);
 }
 
@@ -75,7 +84,7 @@ void battery_bar(uint8_t level, bool isFlash)
 //define to customizing
 #define COL_START         70
 #define BAT_ROW_START     0
-#define BAT_BAR_HIGH      5
+#define BAT_BAR_HIGH      6
 #define BAT_BAR_THICKNESS 3
 #define BAT_BAR_SPACE     1
 #define MAX_LEVEL         3

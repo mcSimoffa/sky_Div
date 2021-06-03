@@ -58,8 +58,17 @@ void pass_to_main_context(uint8_t hour, uint8_t min);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define BUTTON_Pin GPIO_PIN_13
-#define BUTTON_GPIO_Port GPIOC
+#define BLUE_BUTTON_Pin GPIO_PIN_13
+#define BLUE_BUTTON_GPIO_Port GPIOC
+#define BUTTON_UP_Pin GPIO_PIN_0
+#define BUTTON_UP_GPIO_Port GPIOA
+#define BUTTON_UP_EXTI_IRQn EXTI0_IRQn
+#define BUTTON_DOWN_Pin GPIO_PIN_1
+#define BUTTON_DOWN_GPIO_Port GPIOA
+#define BUTTON_DOWN_EXTI_IRQn EXTI1_IRQn
+#define BUTTON_CENTER_Pin GPIO_PIN_2
+#define BUTTON_CENTER_GPIO_Port GPIOA
+#define BUTTON_CENTER_EXTI_IRQn EXTI2_IRQn
 #define LED2_Pin GPIO_PIN_5
 #define LED2_GPIO_Port GPIOA
 /* USER CODE BEGIN Private defines */

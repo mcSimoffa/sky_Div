@@ -9,7 +9,14 @@ typedef enum
   FIT_RIGHT
 } bar_type_t;
 
-void altitude_display(int16_t altitude);
+/*---------------------------------------------------------------
+API for display altitude
+parameter [in] altitude - altitude in meters
+          [in] unitKilometrs - flag to indicate in kilometers
+                                like '7.1' for example
+----------------------------------------------------------------*/
+void altitude_display(int16_t altitude, bool unitKilometrs);
+
 void tempr_display(int8_t tempr);
 
 void progress_bar(bar_type_t _type, uint8_t level);

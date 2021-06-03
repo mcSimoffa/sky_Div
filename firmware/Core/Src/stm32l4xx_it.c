@@ -23,17 +23,23 @@
 #include "stm32l4xx_it.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "app_timer.h"
+#include "oring_buf.h"
 #include "ssd1306_tests.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN TD */
-
+typedef struct
+{
+  void    *port;
+  uint8_t pin;
+} button_context_t;
 /* USER CODE END TD */
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-
+#define JITTER_PERIOD_MS  20
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -43,12 +49,16 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN PV */
-RTC_TimeTypeDef now_time;
+RTC_TimeTypeDef   now_time;
+app_timer_inst_t  btn_up_tmr_h,   btn_down_tmr_h, btn_center_tmr_h;
+button_context_t  btn_up_cont   =   {.port=BUTTON_UP_GPIO_Port,     .pin=BUTTON_UP_Pin};
+button_context_t  btn_down_cont =   {.port=BUTTON_DOWN_GPIO_Port,   .pin=BUTTON_DOWN_Pin};
+button_context_t  btn_center_cont=  {.port=BUTTON_CENTER_GPIO_Port, .pin=BUTTON_CENTER_Pin};
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN PFP */
-
+void app_tmr_cb();
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -187,6 +197,7 @@ void SysTick_Handler(void)
   /* USER CODE BEGIN SysTick_IRQn 0 */
   static uint16_t c=0;
   extern RTC_HandleTypeDef hrtc;
+  app_tmr_cb();
   if(++c >= REFRESH_PERIOD_MS)
   {
     c = 0;
@@ -210,7 +221,87 @@ void SysTick_Handler(void)
 /* please refer to the startup file (startup_stm32l4xx.s).                    */
 /******************************************************************************/
 
-/* USER CODE BEGIN 1 */
+/**
+  * @brief This function handles EXTI line0 interrupt.
+  */
+void EXTI0_IRQHandler(void)
+{
+  /* USER CODE BEGIN EXTI0_IRQn 0 */
 
+  /* USER CODE END EXTI0_IRQn 0 */
+  HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_0);
+  /* USER CODE BEGIN EXTI0_IRQn 1 */
+   app_timer_start(btn_up_tmr_h);
+  /* USER CODE END EXTI0_IRQn 1 */
+}
+
+/**
+  * @brief This function handles EXTI line1 interrupt.
+  */
+void EXTI1_IRQHandler(void)
+{
+  /* USER CODE BEGIN EXTI1_IRQn 0 */
+
+  /* USER CODE END EXTI1_IRQn 0 */
+  HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_1);
+  /* USER CODE BEGIN EXTI1_IRQn 1 */
+  app_timer_start(btn_down_tmr_h);
+  /* USER CODE END EXTI1_IRQn 1 */
+}
+
+/**
+  * @brief This function handles EXTI line2 interrupt.
+  */
+void EXTI2_IRQHandler(void)
+{
+  /* USER CODE BEGIN EXTI2_IRQn 0 */
+
+  /* USER CODE END EXTI2_IRQn 0 */
+  HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_2);
+  /* USER CODE BEGIN EXTI2_IRQn 1 */
+   app_timer_start(btn_center_tmr_h);
+  /* USER CODE END EXTI2_IRQn 1 */
+}
+
+/* USER CODE BEGIN 1 */
+__weak void app_tmr_cb()
+{
+}
+
+typedef enum
+{
+  EVENT_NOTHING,
+  EVENT_UP_PRESSED,
+  EVENT_DOWN_PRESSED,
+  EVENT_CENTER_PRESSED
+} button_event_t;
+
+//----------------------------------------------
+void buuton_triggered(void *context)
+{
+  button_context_t *b_c = (button_context_t*)context;
+  if (HAL_GPIO_ReadPin(b_c->port, b_c->pin) == GPIO_PIN_RESET)
+  {
+    button_event_t event = EVENT_NOTHING;
+    if (b_c == &btn_up_cont)
+      event=EVENT_UP_PRESSED;
+    else 
+      if (b_c == &btn_down_cont)
+        event=EVENT_DOWN_PRESSED;
+      else 
+        if (b_c == &btn_center_cont)
+          event=EVENT_CENTER_PRESSED;
+
+    oring_buf_put((uint32_t)event); //button pushed
+  }
+}
+
+//---------------------------------------
+void button_timers_init()
+{
+  btn_up_tmr_h =      app_timer_create(JITTER_PERIOD_MS, false, buuton_triggered, &btn_up_cont);
+  btn_down_tmr_h =    app_timer_create(JITTER_PERIOD_MS, false, buuton_triggered, &btn_down_cont);
+  btn_center_tmr_h =  app_timer_create(JITTER_PERIOD_MS, false, buuton_triggered, &btn_center_cont);
+}
 /* USER CODE END 1 */
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

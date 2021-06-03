@@ -65,6 +65,8 @@
           <file file_name="../Core/Src/ssd1306_fonts.c" />
           <file file_name="../Core/Src/ssd1306.c" />
           <file file_name="../Core/Src/BMXX80.c" />
+          <file file_name="../Core/Src/app_timer.c" />
+          <file file_name="../Core/Src/oring_buf.c" />
         </folder>
       </folder>
     </folder>
