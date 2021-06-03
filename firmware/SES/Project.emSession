@@ -78,16 +78,18 @@
   <Watches active="0" update="Never"/>
  </Watch4>
  <Files>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="77" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="../Core/Src/main.c" selected="1" top="54" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="90" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="../Core/Src/stm32l4xx_it.c" selected="0" top="67" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="55" y="85" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="../Core/Src/ssd1306_tests.c" selected="0" top="61" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="17" y="16" useTextEdit="1" openedFrom="C:/hte/project/sky_Div/firmware/Core/Src/ssd1306_tests.c" useBinaryEdit="0" left="0" path="../Core/Inc/ssd1306_tests.h" selected="0" top="0" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="150" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="../Core/Src/ssd1306.c" selected="0" top="118" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="78" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="../Core/Src/main.c" selected="1" top="55" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="51" y="195" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="../Core/Src/stm32l4xx_it.c" selected="0" top="164" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="71" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="../Core/Src/ssd1306_tests.c" selected="0" top="70" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="21" useTextEdit="1" openedFrom="C:/hte/project/sky_Div/firmware/Core/Src/ssd1306_tests.c" useBinaryEdit="0" left="0" path="../Core/Inc/ssd1306_tests.h" selected="0" top="0" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="42" y="299" useTextEdit="1" openedFrom="C:/hte/project/sky_Div/firmware/Core/Inc/ssd1306.h" useBinaryEdit="0" left="0" path="../Core/Src/ssd1306.c" selected="0" top="284" codecName="Default"/>
   <SessionOpenFile windowGroup="DockEditLeft" x="0" y="65" useTextEdit="1" openedFrom="C:/hte/project/sky_Div/firmware/Core/Src/main.c" useBinaryEdit="0" left="0" path="../Core/Inc/main.h" selected="0" top="39" codecName="Default"/>
   <SessionOpenFile windowGroup="DockEditLeft" x="67" y="673" useTextEdit="1" openedFrom="C:/hte/project/sky_Div/firmware/Core/Src/main.c" useBinaryEdit="0" left="0" path="../Core/Src/BMXX80.c" selected="0" top="634" codecName="Default"/>
   <SessionOpenFile windowGroup="DockEditLeft" x="17" y="1" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="../Core/Src/ssd1306_fonts.c" selected="0" top="0" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="50" useTextEdit="1" openedFrom="C:/hte/project/sky_Div/firmware/Core/Src/ssd1306.c" useBinaryEdit="0" left="0" path="../Core/Inc/ssd1306.h" selected="0" top="27" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="17" y="91" useTextEdit="1" openedFrom="C:/hte/project/sky_Div/firmware/Core/Src/ssd1306_tests.c" useBinaryEdit="0" left="0" path="../Core/Inc/ssd1306.h" selected="0" top="55" codecName="Default"/>
   <SessionOpenFile windowGroup="DockEditLeft" x="0" y="25" useTextEdit="1" openedFrom="C:/hte/project/sky_Div/firmware/Core/Src/ssd1306_fonts.c" useBinaryEdit="0" left="0" path="../Core/Inc/ssd1306_fonts.h" selected="0" top="0" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="0" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="STM32L4x6_Vectors.s" selected="0" top="350" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="0" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="C:/Program Files/SEGGER/SEGGER Embedded Studio for ARM 5.40/samples/SEGGER_THUMB_Startup.s" selected="0" top="242" codecName="Default"/>
  </Files>
  <ARMCrossStudioWindow activeProject="firmware" fileDialogDefaultFilter="*" autoConnectTarget="J-Link" buildConfiguration="firmware Internal" sessionSettings="" debugSearchFileMap="" fileDialogInitialDirectory="C:/hte/project/sky_Div/firmware/Drivers/STM32L4xx_HAL_Driver/Src" debugSearchPath="" autoConnectCapabilities="3711"/>
 </session>

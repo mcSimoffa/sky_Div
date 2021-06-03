@@ -69,26 +69,56 @@ void progress_bar(bar_type_t _type, uint8_t level)
 
 }
 
-//---------------------------------------------------------------
-//level -1 -0 bar and blinking
-//level 0 - 0 bar
-//level 1 - 1 bar
-//level 2 - 2 bar
-//level 3 - 3 bar
-void battery_bar(int8_t level)
+//----------------------------------------------------------------
+void battery_bar(uint8_t level, bool isFlash)
 {
+//define to customizing
 #define COL_START         70
 #define BAT_ROW_START     0
 #define BAT_BAR_HIGH      5
 #define BAT_BAR_THICKNESS 3
 #define BAT_BAR_SPACE     1
+#define MAX_LEVEL         3
+#define BOUNDARY_FLASH_FREQUENCY_DIVIDER         4
 
 #define BAT_ROW_END  (BAT_ROW_START + BAT_BAR_HIGH - 1)
-  for (uint8_t i=0; i<level*(BAR_THICKNESS + BAR_SPACE); i++)
+  if (level <= MAX_LEVEL)
   {
-    if (i%(BAR_THICKNESS + BAR_SPACE)< BAR_THICKNESS)
-      ssd1306_Line(COL_START-i ,BAT_ROW_START, COL_START-i, BAT_ROW_END, White);
-    else
-      ssd1306_Line(COL_START-i ,BAT_ROW_START, COL_START-i, BAT_ROW_END, Black);
+    uint8_t col_end;
+    for (uint8_t i=0; i<level*(BAR_THICKNESS + BAR_SPACE); i++)
+    {
+      if (i%(BAR_THICKNESS + BAR_SPACE)< BAR_THICKNESS)
+        ssd1306_Line(COL_START-i ,BAT_ROW_START, COL_START-i, BAT_ROW_END, White);
+      else
+        ssd1306_Line(COL_START-i ,BAT_ROW_START, COL_START-i, BAT_ROW_END, Black);
+    }
+  
+    //boundary of battery drawing
+    col_end = COL_START-MAX_LEVEL*(BAT_BAR_THICKNESS+BAT_BAR_SPACE)+BAT_BAR_SPACE;
+    static uint8_t boundary_flashing = BOUNDARY_FLASH_FREQUENCY_DIVIDER;
+    static SSD1306_COLOR boundary_color = White;
+    if (isFlash)
+    {
+      if  (--boundary_flashing == 0)
+      {
+        boundary_color = (boundary_color==Black)? White:Black;
+        boundary_flashing = BOUNDARY_FLASH_FREQUENCY_DIVIDER;
+      }
+    }
+    else 
+      boundary_color = White;
+    SSD1306_VERTEX battery_bound[9]=
+    {
+      {.x=COL_START,  .y=BAT_ROW_START},
+      {.x=col_end,    .y=BAT_ROW_START},
+      {.x=col_end,    .y=BAT_ROW_START+1},
+      {.x=col_end-1,  .y=BAT_ROW_START+1},
+      {.x=col_end-1,  .y=BAT_ROW_END-1},
+      {.x=col_end,    .y=BAT_ROW_END-1},
+      {.x=col_end,    .y=BAT_ROW_END},
+      {.x=COL_START,  .y=BAT_ROW_END},
+      {.x=COL_START,  .y=BAT_ROW_START}
+    };
+    ssd1306_Polyline(&battery_bound[0], sizeof(battery_bound)/sizeof(SSD1306_VERTEX), boundary_color);
   }
 }

@@ -63,7 +63,7 @@ void pass_to_main_context(uint8_t hour, uint8_t min);
 #define LED2_Pin GPIO_PIN_5
 #define LED2_GPIO_Port GPIOA
 /* USER CODE BEGIN Private defines */
-#define REFRSH_PERIOD_MS  200
+#define REFRESH_PERIOD_MS  200
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

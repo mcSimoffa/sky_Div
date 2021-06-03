@@ -75,6 +75,7 @@ static void MX_RTC_Init(void);
   */
 int main(void)
 
+
 {
   /* USER CODE BEGIN 1 */
   float pressure_groung = 0;
@@ -153,7 +154,7 @@ int main(void)
       k=0;
 
     static uint8_t bl=0;
-    battery_bar(bl);
+    battery_bar(bl, false);
     if(++bl>3)
       bl=0;
 

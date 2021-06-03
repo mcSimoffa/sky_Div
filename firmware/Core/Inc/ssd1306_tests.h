@@ -14,7 +14,16 @@ void tempr_display(int8_t tempr);
 
 void progress_bar(bar_type_t _type, uint8_t level);
 
-void battery_bar(int8_t level);
+/*---------------------------------------------------------------
+API for display a battery icon on a display
+the icon fit are customizing by defines inside
+parameter [in] level - sprips quatity on the icon
+          [in] isFlash - the battery boundary will be flash
+                          (to charge process indicate)
+----------------------------------------------------------------*/
+void battery_bar(uint8_t level, bool isFlash);
+
+
 /*---------------------------------------------
 function for display time like HH:MM
 it should launck once per second for bliking ':'

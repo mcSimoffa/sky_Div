@@ -187,10 +187,10 @@ void SysTick_Handler(void)
   /* USER CODE BEGIN SysTick_IRQn 0 */
   static uint16_t c=0;
   extern RTC_HandleTypeDef hrtc;
-  if(++c >= REFRSH_PERIOD_MS)
+  if(++c >= REFRESH_PERIOD_MS)
   {
     c = 0;
-    if (HAL_RTC_GetTime (&hrtc, &now_time, RTC_FORMAT_BIN) == HAL_OK)
+    if (HAL_RTC_GetTime(&hrtc, &now_time, RTC_FORMAT_BIN) == HAL_OK)
     {
       pass_to_main_context (now_time.Hours, now_time.Minutes);
       HAL_GPIO_TogglePin(LED2_GPIO_Port, LED2_Pin);
