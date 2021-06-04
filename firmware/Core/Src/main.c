@@ -53,8 +53,8 @@ RTC_HandleTypeDef hrtc;
 
 /* USER CODE BEGIN PV */
 bool update_flag = false;
-uint8_t _hour, _minute;
-menu_def_t main_mnu_h;
+uint8_t _hour, _minute, new_minute, new_hour;
+menu_def_t main_mnu_h, units_mnu_h, time_mnu_h, min_mnu_h;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -64,8 +64,16 @@ static void MX_I2C1_Init(void);
 static void MX_I2C2_Init(void);
 static void MX_RTC_Init(void);
 /* USER CODE BEGIN PFP */
-void create_main_menu();
-void handle_main_menu();
+static void create_main_menu();
+static void create_units_menu();
+static void create_time_menu();
+static void create_minute_menu();
+
+
+static void handle_main_menu();
+static void handle_units_menu();
+static void handle_time_menu();
+static void handle_minute_menu();
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -105,8 +113,9 @@ int main(void)
   MX_I2C2_Init();
   MX_RTC_Init();
   /* USER CODE BEGIN 2 */
+  HAL_RTCEx_EnableBypassShadow(&hrtc);
   button_timers_init();
-  float null_level_pa =42000;
+  float null_level_pa =101000;
 #ifdef BME280
   BME280_Init(&hi2c2, BME280_TEMPERATURE_16BIT, BME280_PRESSURE_ULTRALOWPOWER, BME280_HUMINIDITY_STANDARD, BME280_NORMALMODE );
   BME280_SetConfig(BME280_STANDBY_MS_10, BME280_FILTER_X8 );
@@ -114,6 +123,9 @@ int main(void)
   ssd1306_Init();
   ssd1306_Fill(Black);
   create_main_menu();
+  create_units_menu();
+  create_time_menu();
+  create_minute_menu();
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -167,7 +179,7 @@ int main(void)
       bl=0;
 
     ssd1306_UpdateScreen();
-    printf("\ralttitude = %.2f m. Temperature = %.2f grad C",  altitude,_tmpr);    
+    printf("\ralttitude = %.2f m. Temperature = %.2f grad C Time %d:%d",  altitude,_tmpr,_hour,_minute);    
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -423,28 +435,92 @@ void pass_to_main_context(uint8_t hour, uint8_t min)
   update_flag = true;
 }
 
-//-------------------------------------------
-void handle_main_menu()
+//------------------------------------------------
+static void create_main_menu()
 {
-  printf("\r\nenter to main menu");
+  main_mnu_h = menu_create(8,0);
+  menu_add(main_mnu_h, 0, "units", handle_units_menu);
+  menu_add(main_mnu_h, 1, "freefall mc", NULL);
+  menu_add(main_mnu_h, 2, "deployment he", NULL);
+  menu_add(main_mnu_h, 3, "contrast", NULL);
+  menu_add(main_mnu_h, 4, "shift_texts", NULL);
+  menu_add(main_mnu_h, 5, "recorder jump", NULL);
+  menu_add(main_mnu_h, 6, "language", NULL);
+  menu_add(main_mnu_h, 7, "<-", NULL);
+}
+
+//------------------------------------------------
+static void create_units_menu()
+{
+  units_mnu_h = menu_create(5,0);
+  menu_add(units_mnu_h, 0, "year", NULL);
+  menu_add(units_mnu_h, 1, "month", NULL);
+  menu_add(units_mnu_h, 2, "time", handle_time_menu);
+  menu_add(units_mnu_h, 3, "serial", NULL);
+  menu_add(units_mnu_h, 4, "<<-", NULL);
+}
+
+//------------------------------------------------
+static void create_time_menu()
+{
+  static char labels_hours[24][4];
+  time_mnu_h = menu_create(24, _hour);
+  for(uint8_t i=0; i<24; i++)
+  {
+    snprintf(&labels_hours[i][0], 4 ,"%d", i);
+    menu_add(time_mnu_h, i, &labels_hours[i][0], handle_minute_menu);
+  }
+}
+
+//------------------------------------------------
+static void create_minute_menu()
+{
+  static char labels_mins[60][4];
+  min_mnu_h = menu_create(60, _minute);
+  for(uint8_t i=0; i<60; i++)
+  {
+    snprintf(&labels_mins[i][0], 4 ,"%d", i);
+    menu_add(min_mnu_h, i, &labels_mins[i][0], NULL);
+  }
+}
+
+//-------------------------------------------
+static uint32_t handle_usual_menu(menu_def_t menu_inst, char *logo)
+{
+#define SET_SHIFT_TEXT 4 //in pixels
   SSD1306_COLOR color;
-  FontDef       font = Font_6x8;
-  uint32_t got_event;
-  bool main_leave_flag = false;
+  FontDef  font = Font_6x8;
+  uint32_t got_event, activ_e;
+  char  text[16];
+  bool mnu_leave_flag = false;
   do
   {
+    // out to display a text of menu
     ssd1306_Fill(Black);
-    int32_t activ_e = (int32_t)menu_get_active_elem(main_mnu_h);
+    activ_e = menu_get_active_elem(menu_inst);
     uint8_t n=0;
-    for(int32_t i=activ_e-2; i<activ_e+3; i++)
+    uint8_t col= SET_SHIFT_TEXT * 2;
+    int8_t  shift_text = -SET_SHIFT_TEXT;
+    for(int32_t i=(int32_t)activ_e-2; i<(int32_t)activ_e+3; i++)
     {
       uint8_t row = font.FontHeight*n++;
-      color = (i==activ_e)? Black:White;
-      ssd1306_SetCursor(0, row);
-      ssd1306_WriteString(menu_get_string(main_mnu_h, i), font, color);
+      if (i==activ_e)
+      {
+        color = Black;
+        shift_text *= -1;
+      }
+      else
+       color = White;
+ 
+      ssd1306_SetCursor(col, row);
+      col += shift_text;
+      ssd1306_WriteString(menu_get_string(menu_inst, i), font, color);
+      if ((logo) && (i==activ_e))
+      ssd1306_WriteString(logo, font, White);
     }
     ssd1306_UpdateScreen();
-
+  
+    // wait keypress
     while(!oring_buf_get(&got_event)) //wait any key press
     {
       //TODO should sleep
@@ -452,31 +528,71 @@ void handle_main_menu()
     switch (got_event)
     {
       case EVENT_CENTER_PRESSED:
-        main_leave_flag = true;
+        mnu_leave_flag = true;
         break;
 
       case EVENT_UP_PRESSED:
-        menu_list_up(main_mnu_h);
+        menu_list_up(menu_inst);
         break;
 
       case EVENT_DOWN_PRESSED:
-        menu_list_down(main_mnu_h);
+        menu_list_down(menu_inst);
         break;
     }
-  } while (!main_leave_flag);
+  } while (!mnu_leave_flag);
   
   // exit to next menu for example
+  return (activ_e);
 }
 
-void create_main_menu()
+//-------------------------------------------
+static void handle_main_menu()
 {
-  main_mnu_h = menu_create(5,0);
-  menu_add(main_mnu_h, 0, "units");
-  menu_add(main_mnu_h, 1, "freefall mc");
-  menu_add(main_mnu_h, 2, "deployment he");
-  menu_add(main_mnu_h, 3, "contrast");
-  menu_add(main_mnu_h, 4, "offsets");
+  do
+  {
+    printf("\r\nenter to 'main' menu");
+    if (handle_usual_menu(main_mnu_h, NULL) != 7)
+      menu_enter_to_submenu(main_mnu_h);
+    else
+      break;
+  } while(1);
 }
+
+//-------------------------------------------
+static void handle_units_menu()
+{
+  do
+  {
+    printf("\r\nenter to 'units' menu");
+    if (handle_usual_menu(units_mnu_h, NULL) != 4)
+      menu_enter_to_submenu(units_mnu_h);
+    else
+      break;
+  } while(1);
+}
+
+//-------------------------------------------
+static void handle_time_menu()
+{
+  printf("\r\nenter to 'time-hours' menu");
+  menu_set_active_elem(time_mnu_h, _hour);
+  RTC_TimeTypeDef   new_time;
+  new_time.Hours = handle_usual_menu(time_mnu_h, "   HR");
+  menu_enter_to_submenu(time_mnu_h);
+  new_time.Minutes = new_minute;
+  new_time.Seconds = 0;
+  new_time.TimeFormat = RTC_FORMAT_BIN;
+  HAL_RTC_SetTime(&hrtc, &new_time, RTC_FORMAT_BIN);
+}
+
+//-------------------------------------------
+static void handle_minute_menu()
+{
+  printf("\r\nenter to 'time-minutes' menu");
+  menu_set_active_elem(min_mnu_h, _minute);
+  new_minute = handle_usual_menu(min_mnu_h, "   MIN");
+}
+
 /* USER CODE END 4 */
 
 /**
