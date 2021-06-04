@@ -23,9 +23,10 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <stdio.h>
+#include "stm32l4xx_it.h"
 #include "app_timer.h"
 #include "oring_buf.h"
-#include "stm32l4xx_it.h"
+#include "menu_lib.h"
 #include "ssd1306_tests.h"
 #include "BMPXX80.h"
 /* USER CODE END Includes */
@@ -37,8 +38,6 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define TEMPERATURE_MEASURE
-#define CAL_SAMPLES   20
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -55,6 +54,7 @@ RTC_HandleTypeDef hrtc;
 /* USER CODE BEGIN PV */
 bool update_flag = false;
 uint8_t _hour, _minute;
+menu_def_t main_mnu_h;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -64,7 +64,8 @@ static void MX_I2C1_Init(void);
 static void MX_I2C2_Init(void);
 static void MX_RTC_Init(void);
 /* USER CODE BEGIN PFP */
-
+void create_main_menu();
+void handle_main_menu();
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -111,22 +112,8 @@ int main(void)
   BME280_SetConfig(BME280_STANDBY_MS_10, BME280_FILTER_X8 );
 #endif
   ssd1306_Init();
-  //print_calState(false);
-  //print_frame();
-  //printf("press button to ground calibration");
-  //while (HAL_GPIO_ReadPin(BUTTON_GPIO_Port, BUTTON_Pin) == GPIO_PIN_SET)
-  //  asm("nop");
-  
-  //print_calState(true);
-  //for (uint8_t i=0; i<CAL_SAMPLES; i++)
- // {
-  //  pressure_groung += BME280_ReadPressure();
-  //  HAL_Delay(100);
-  //}
-
-  //pressure_groung /= CAL_SAMPLES;
-  //printf("\r\ncalibration complete. Pressure = %.2f Pa", pressure_groung);
   ssd1306_Fill(Black);
+  create_main_menu();
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -141,7 +128,24 @@ int main(void)
     update_flag = false;
     uint32_t got_event;
     if(oring_buf_get(&got_event))
+    {
+      switch (got_event)
+      {
+        case EVENT_CENTER_PRESSED:
+          handle_main_menu();
+          break;
+
+        case EVENT_UP_PRESSED:
+          printf("Up pressed\r\n");
+          break;
+
+        case EVENT_DOWN_PRESSED:
+          printf("Down pressed\r\n");
+          break;
+      }
+
       printf("event %d\r\n", got_event);
+    }
     float _tmpr;
     int32_t _pressure;
     float _humin;
@@ -417,8 +421,61 @@ void pass_to_main_context(uint8_t hour, uint8_t min)
   _hour=hour;
   _minute=min;
   update_flag = true;
+}
 
+//-------------------------------------------
+void handle_main_menu()
+{
+  printf("\r\nenter to main menu");
+  SSD1306_COLOR color;
+  FontDef       font = Font_6x8;
+  uint32_t got_event;
+  bool main_leave_flag = false;
+  do
+  {
+    ssd1306_Fill(Black);
+    int32_t activ_e = (int32_t)menu_get_active_elem(main_mnu_h);
+    uint8_t n=0;
+    for(int32_t i=activ_e-2; i<activ_e+3; i++)
+    {
+      uint8_t row = font.FontHeight*n++;
+      color = (i==activ_e)? Black:White;
+      ssd1306_SetCursor(0, row);
+      ssd1306_WriteString(menu_get_string(main_mnu_h, i), font, color);
+    }
+    ssd1306_UpdateScreen();
 
+    while(!oring_buf_get(&got_event)) //wait any key press
+    {
+      //TODO should sleep
+    }
+    switch (got_event)
+    {
+      case EVENT_CENTER_PRESSED:
+        main_leave_flag = true;
+        break;
+
+      case EVENT_UP_PRESSED:
+        menu_list_up(main_mnu_h);
+        break;
+
+      case EVENT_DOWN_PRESSED:
+        menu_list_down(main_mnu_h);
+        break;
+    }
+  } while (!main_leave_flag);
+  
+  // exit to next menu for example
+}
+
+void create_main_menu()
+{
+  main_mnu_h = menu_create(5,0);
+  menu_add(main_mnu_h, 0, "units");
+  menu_add(main_mnu_h, 1, "freefall mc");
+  menu_add(main_mnu_h, 2, "deployment he");
+  menu_add(main_mnu_h, 3, "contrast");
+  menu_add(main_mnu_h, 4, "offsets");
 }
 /* USER CODE END 4 */
 

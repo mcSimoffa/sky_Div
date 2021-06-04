@@ -37,7 +37,13 @@ extern "C" {
 
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
-
+typedef enum
+{
+  EVENT_NOTHING,
+  EVENT_UP_PRESSED,
+  EVENT_DOWN_PRESSED,
+  EVENT_CENTER_PRESSED
+} button_event_t;
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/

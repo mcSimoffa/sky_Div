@@ -268,14 +268,6 @@ __weak void app_tmr_cb()
 {
 }
 
-typedef enum
-{
-  EVENT_NOTHING,
-  EVENT_UP_PRESSED,
-  EVENT_DOWN_PRESSED,
-  EVENT_CENTER_PRESSED
-} button_event_t;
-
 //----------------------------------------------
 void buuton_triggered(void *context)
 {

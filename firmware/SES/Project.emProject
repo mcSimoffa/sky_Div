@@ -67,6 +67,8 @@
           <file file_name="../Core/Src/BMXX80.c" />
           <file file_name="../Core/Src/app_timer.c" />
           <file file_name="../Core/Src/oring_buf.c" />
+          <file file_name="../Core/Src/menu_lib.c" />
+          <file file_name="../Core/Inc/menu_lib.h" />
         </folder>
       </folder>
     </folder>
